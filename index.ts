@@ -58,15 +58,14 @@ app.get('/decryption/', async (req, res) => {
             (encryptedPasswordArray[i] == '#') || (encryptedPasswordArray[i] == '$') ||
             (encryptedPasswordArray[i] == '%') || (encryptedPasswordArray[i] == '^') ||
             (encryptedPasswordArray[i] == '&') || (encryptedPasswordArray[i] == '*')) {
-                // replace delimiters by ' '
-                encryptedPasswordArray[i] = ' ';
-            }
+            // replace delimiters by ' '
+            encryptedPasswordArray[i] = ' ';
+        }
     }
 
-    
     // console.log('encryptedPassword: ' + encryptedPassword);
     // console.log('encryptedPassword.length: ' + encryptedPassword.length);
-    
+
     // console.log('encryptedPasswordArray: ' + encryptedPasswordArray);
     // console.log('encryptedPasswordArray.length: ' + encryptedPasswordArray.length);
 
@@ -93,7 +92,7 @@ app.get('/decryption/', async (req, res) => {
                 // if eachChar is [a-z]
                 tempString += '1';
             } else if ((Number(eachChar) >= 0) && (Number(eachChar) <= 9)) {
-                // if eachChar is[0-9]
+                // if eachChar is [0-9]
                 tempString += '0';
             } else {
                 // do nothing
