@@ -9,17 +9,22 @@ app.use(cors());
 app.get('/encryption/', async (req, res) => {
     let originalPassword: string = req.body.password;
     let encrypted: any = originalPassword.split('').map(a => a.charCodeAt(0));
-    const chars = ["a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z"];
+    const chars: string[] = [];
+    for (let i = 97; i <= 122; i++) {
+        // chars: ['a', ..., 'z']
+        chars.push(String.fromCharCode(i));
+    }
+    console.log(chars);
     const delimiters = ["!", "@", "#", "$", "%", "^", "&", "*"];
 
     // get values of array to binary
     for (let i = 0; i < encrypted.length; i++) {
         // convert each char to binary
-        encrypted[i] = encrypted[i].toString(2);
+        encrypted[i] = encrypted[i].toString(2);    // convert each character to a binary string
         console.log(`# encrypted[${i}]: ${encrypted[i]}`);
 
-        encrypted[i] = encrypted[i].split('');  // convert to array of chars
-        // console.log(encrypted);
+        encrypted[i] = encrypted[i].split('');  // convert the binary string to array of 0's and 1's
+        // console.log('encrypted: ' + encrypted);
 
         // console.log('encrypted[i].length: ' + encrypted[i].length);
         // replace 1's with alphabetic characters, 0's with numeric characters
