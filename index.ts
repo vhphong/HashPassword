@@ -8,7 +8,8 @@ app.use(cors());
 
 app.get('/encryption/', async (req, res) => {
     let originalPassword: string = req.body.password;
-    let encrypted: any = originalPassword.split('').map(a => a.charCodeAt(0));
+    let encrypted: any = originalPassword.split('').map(a => a.charCodeAt(0));  // convert each character to a decimal number
+    // console.log('encrypted: ' + encrypted);
     const chars: string[] = [];
     for (let i = 97; i <= 122; i++) {
         // chars: ['a', ..., 'z']
