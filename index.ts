@@ -150,9 +150,6 @@ app.get('/encryption8/', async (req, res) => {
         console.log(`# encrypted[${i}] .: ${encrypted[i]}`);
 
         // convert each element again to decimal, ex.: '141' (8) --> '141' (10)
-        encrypted[i] = encrypted[i].split('').join('').toString(10);
-        console.log(`# encrypted[${i}] ..: ${encrypted[i]}`);
-
         let temp: any = Number(encrypted[i]);
         console.log('temp: ' + temp);
         temp = temp.toString(2);
