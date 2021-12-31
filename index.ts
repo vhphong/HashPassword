@@ -26,7 +26,7 @@ app.get('/encryption/', async (req, res) => {
         console.log(`# encrypted[${i}]: ${encrypted[i]}`);
 
         encrypted[i] = encrypted[i].split('');      // convert the binary string to array of 0's and 1's
-        // console.log('encrypted: ' + encrypted);
+        console.log('encrypted .: ' + encrypted);
 
         // console.log('encrypted[i].length: ' + encrypted[i].length);
         // replace 1's with alphabetical characters, 0's with numeric characters
@@ -48,6 +48,7 @@ app.get('/encryption/', async (req, res) => {
         encrypted[i] = encrypted[i].join('');
     }
     encrypted = encrypted.join('');     // encrypted is fully converted
+
     console.log('encrypted: ' + encrypted);
 
     res.status(200).send('encrypted: ' + encrypted);
@@ -56,7 +57,6 @@ app.get('/encryption/', async (req, res) => {
 
 app.get('/decryption/', async (req, res) => {
     let encryptedPassword: string = req.body.password;
-    const delimiters: string[] = ['!', '@', '#', '$', '%', '^', '&', '*'];
 
     let encryptedPasswordArray: any[] = encryptedPassword.split('');
 
@@ -92,6 +92,7 @@ app.get('/decryption/', async (req, res) => {
     console.log('tempArray.length: ' + tempArray.length);
 
     let decrypted: any = '';
+
     for (let element of tempArray) {
         let tempString: any = '';
         for (let eachChar of element) {
@@ -121,9 +122,9 @@ app.get('/decryption/', async (req, res) => {
 
 
 app.get('/encryption8/', async (req, res) => {
-    // 'a' => 97 (10) => 141 (8) => odd even odd  => randNum randChar randNum  specialChar => 4n9@
-    // 'b' => 98 (10) => 142 (8) => odd even even => randNum randChar randChar specialChar => 5ow^
-    // 'ab' => ... => 7h4$2iq*
+    // 'a' => 97 (10) => 141 (8) => 141 (10) => 10001101 => xm3057s#
+    // 'b' => 98 (10) => 142 (8) => 142 (10) => 10001110 => oj614t5%
+    // 'ab' => ... => 'xm3057s#oj614t5%'
 
     let originalPassword: string = req.body.password;
     // convert each char of encrypted to ascii, ex.: 'a' => 97 (10)
@@ -143,21 +144,38 @@ app.get('/encryption8/', async (req, res) => {
     for (let i = 0; i < encrypted.length; ++i) {
         // convert each element of encrypted to octal
         // ex.: 97 (10) --> '141' (8)
-        encrypted[i] = encrypted[i].toString(8);    
-        console.log(`# encrypted[${i}]: ${encrypted[i]}`);
+        console.log(`# encrypted[${i}] : ${encrypted[i]}`);
 
-        encrypted[i] = encrypted[i].split('');
+        encrypted[i] = encrypted[i].toString(8);
+        console.log(`# encrypted[${i}] .: ${encrypted[i]}`);
+
+        // convert each element again to decimal, ex.: '141' (8) --> '141' (10)
+        encrypted[i] = encrypted[i].split('').join('').toString(10);
+        console.log(`# encrypted[${i}] ..: ${encrypted[i]}`);
+
+        let temp: any = Number(encrypted[i]);
+        console.log('temp: ' + temp);
+        temp = temp.toString(2);
+        console.log('temp .: ' + temp);
+
+        encrypted[i] = temp.split('');
+        console.log(`# encrypted[${i}] ...: ${encrypted[i]}`);
 
         for (let j = 0; j < encrypted[i].length; ++j) {
-            if ((Number(encrypted[i][j]) % 2) === 0) {
-                // even number --> replaced with an alphabetical character
+            if (encrypted[i][j] === '1') {
+                // replace with an alphabetical character.
                 const index = (Math.floor(Math.random() * 1000)) % 26;
                 encrypted[i][j] = chars[index];
             } else {
-                // odd number --> replaced with a numeric character
+                // replace with numerical character.
                 encrypted[i][j] = (Math.floor(Math.random() * 1000)) % 10;
             }
             // add a special character as a delimiter at the end of each element
+            if (j === encrypted[i].length - 1) {
+                const index = (Math.floor(Math.random() * 1000)) % 8;
+                encrypted[i][j] += delimiters[index];
+            }
+
             if (j === encrypted[i].length - 1) {
                 const index = (Math.floor(Math.random() * 1000)) % 8;
                 encrypted[i][j] += delimiters[index];
@@ -166,10 +184,71 @@ app.get('/encryption8/', async (req, res) => {
         encrypted[i] = encrypted[i].join('');
     }
     encrypted = encrypted.join('');     // encrypted is fully converted
-    
+
     console.log('encrypted: ' + encrypted);
 
     res.status(201).send('encrypted: ' + encrypted);
+});
+
+
+app.get('/decryption8/', async (req, res) => {
+    let encryptedPassword: string = req.body.password;  // '7h4$2iq*'
+
+    let encryptedPasswordArray: any[] = encryptedPassword.split(''); // ['7', 'h', '4', '$', '2', 'i', 'q', '*']
+
+    for (let i = 0; i < encryptedPasswordArray.length; ++i) {   // ['7', 'h', '4', ' ', '2', 'i', 'q', ' ']
+        if ((encryptedPasswordArray[i] == '!') || (encryptedPasswordArray[i] == '@') ||
+            (encryptedPasswordArray[i] == '#') || (encryptedPasswordArray[i] == '$') ||
+            (encryptedPasswordArray[i] == '%') || (encryptedPasswordArray[i] == '^') ||
+            (encryptedPasswordArray[i] == '&') || (encryptedPasswordArray[i] == '*')) {
+            // replace delimiters by ' '
+            encryptedPasswordArray[i] = ' ';
+        }
+    }
+
+
+    // console.log('encryptedPassword: ' + encryptedPassword);
+    // console.log('encryptedPassword.length: ' + encryptedPassword.length);
+
+    // console.log('encryptedPasswordArray: ' + encryptedPasswordArray);
+    // console.log('encryptedPasswordArray.length: ' + encryptedPasswordArray.length);
+
+    encryptedPassword = encryptedPasswordArray.join('');    // '7h4 2iq '
+
+    // console.log('encryptedPassword: ~ ' + encryptedPassword);
+    // console.log('encryptedPassword.length: ' + encryptedPassword.length);
+
+    // console.log('encryptedPassword: ' + encryptedPassword);
+
+    // split encryptedPassword into an array of strings
+
+    encryptedPasswordArray = encryptedPassword.split(' ');
+    encryptedPasswordArray.pop();   // remove the last element
+
+    console.log(encryptedPasswordArray);
+
+    let decrypted: any = '';
+
+    for (let element of encryptedPasswordArray) {
+        let tempString: any = '';
+
+        for (let eachChar of element) {
+            if ((eachChar >= 'a') && (eachChar <= 'z')) {
+                // it is a alphabetical character, [a-z]
+
+            } else if ((eachChar >= '0') && (eachChar <= '9')) {
+                // it is a numerical character, [0-9]
+
+            }
+        }
+
+        console.log(tempString);
+        tempString = Number(tempString);
+        tempString = parseInt(tempString, 8);
+        console.log(tempString);
+        tempString = parseInt(tempString, 8);
+        console.log(tempString);
+    }
 });
 
 
